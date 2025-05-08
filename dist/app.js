@@ -29,13 +29,11 @@ app.use("/api/v1/product", productRoutes);
 app.use("/api/v1/order", orderRoutes);
 app.use("/api/v1/payment", couponRoutes);
 app.use("/api/v1/dashboard", adminRoutes);
-
-app.get('/', (res, req)=>{
-    return res.send("this api server is working")
-})
+app.get('/', (req, res) => {
+    res.send('Welcome to the prabhshreebhog API!');
+});
 // 404 error handling middleware
 app.use("/uploads", express.static("uploads"));
 app.use(errorMiddleware);
 app.use(morgan("dev"));
-
 export default app;
