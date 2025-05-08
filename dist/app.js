@@ -33,6 +33,5 @@ app.use("/api/v1/dashboard", adminRoutes);
 app.use("/uploads", express.static("uploads"));
 app.use(errorMiddleware);
 app.use(morgan("dev"));
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
-});
+
+export default app;
