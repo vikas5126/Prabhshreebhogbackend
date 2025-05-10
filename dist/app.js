@@ -17,7 +17,7 @@ config({
 });
 const port = process.env.PORT || 3000;
 const app = express();
-app.use(cors({ origin: 'frontend-wine-seven-22.vercel.app' }));
+app.use(cors({ origin: 'https://frontend-wine-seven-22.vercel.app' }));
 // app.use(cors({origin: 'http://localhost:5173'}));
 app.use(express.json());
 const stripeKey = process.env.STRIPE_KEY || "";
