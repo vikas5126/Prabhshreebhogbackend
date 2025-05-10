@@ -17,7 +17,8 @@ config({
 });
 const port = process.env.PORT || 3000;
 const app = express();
-app.use(cors());
+app.use(cors({ origin: 'https://frontend-wine-seven-22.vercel.app' }));
+// app.use(cors());
 app.use(express.json());
 const stripeKey = process.env.STRIPE_KEY || "";
 export const stripe = new Stripe(stripeKey);
@@ -36,4 +37,9 @@ app.get('/', (req, res) => {
 app.use("/uploads", express.static("uploads"));
 app.use(errorMiddleware);
 app.use(morgan("dev"));
+// app.listen(port, () => {
+//     console.log(`Server is running on http://localhost:${port}`);
+// }).on('error', (err) => {
+//     console.error('Failed to start the server:', err.message);
+// });
 export default app;
