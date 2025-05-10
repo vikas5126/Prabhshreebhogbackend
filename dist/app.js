@@ -1,5 +1,4 @@
 import express from 'express';
-import { connectDB } from './utils/features.js';
 import NodeCache from 'node-cache';
 import { errorMiddleware } from './middlewares/error.js';
 import { config } from "dotenv";
@@ -17,13 +16,14 @@ config({
 });
 const port = process.env.PORT || 3000;
 const app = express();
-app.use(cors({ origin: 'https://frontend-no60cx2dm-vikas-kumars-projects-0ac296a0.vercel.app' }));
-// app.use(cors({origin: 'http://localhost:5173'}));
-app.use(express.json());
-const stripeKey = process.env.STRIPE_KEY || "";
-export const stripe = new Stripe(stripeKey);
-app.use(express.urlencoded({ extended: true }));
-connectDB(process.env.uri);
+app.use(cors({ origin: 'frontend-wine-seven-22.vercel.app,
+    '}));: 
+    // app.use(cors({origin: 'http://localhost:5173'}));
+    app.use(express.json()),
+    const: stripeKey = process.env.STRIPE_KEY || "",
+    const: stripe = new Stripe(stripeKey),
+    app, : .use(express.urlencoded({ extended: true })),
+    connectDB(process) { }, : .env.uri }));
 export const MyCache = new NodeCache();
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/product", productRoutes);
