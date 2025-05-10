@@ -22,8 +22,8 @@ config({
 const port = process.env.PORT || 3000;
 const app = express();
 
-app.use(cors({origin: 'https://frontend-no60cx2dm-vikas-kumars-projects-0ac296a0.vercel.app'}));
-// app.use(cors());
+// app.use(cors({origin: 'https://frontend-no60cx2dm-vikas-kumars-projects-0ac296a0.vercel.app'}));
+app.use(cors());
 app.use(express.json());
 
 const stripeKey = process.env.STRIPE_KEY || "";
