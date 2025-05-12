@@ -3,18 +3,21 @@ import { adminOnly } from "../middlewares/auth.js";
 import {
   allCoupons,
   applyDiscount,
-  createPaymentIntent,
+  createRazorpayOrder
 //   createPaymentIntent,
   deleteCoupon,
   getCoupon,
   newCoupon,
   updateCoupon,
+  verifyRazorpayPayment,
 } from "../controllers/payment.js";
 
 const app = express.Router();
 
 // route - /api/v1/payment/create
-app.post("/create", createPaymentIntent);
+app.post("/create", createRazorpayOrder);
+
+app.post("/verify", verifyRazorpayPayment)
 
 // route - /api/v1/payment/coupon/new
 app.get("/discount", applyDiscount);

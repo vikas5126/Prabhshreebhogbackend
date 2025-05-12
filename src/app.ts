@@ -14,6 +14,7 @@ import productRoutes from './routes/product.js';
 import orderRoutes from './routes/order.js';
 import couponRoutes from './routes/payment.js';
 import adminRoutes from './routes/stats.js';
+import Razorpay from 'razorpay';
 
 config({
     path: "./.env",
@@ -22,13 +23,19 @@ config({
 const port = process.env.PORT || 3000;
 const app = express();
 
-app.use(cors({origin: 'https://frontend-wine-seven-22.vercel.app'}));
+// app.use(cors({origin: 'https://frontend-wine-seven-22.vercel.app'}));
 // app.use(cors({origin: 'http://localhost:5173'}));
+app.use(cors());
 app.use(express.json());
 
-const stripeKey = process.env.STRIPE_KEY || "";
+// const stripeKey = process.env.STRIPE_KEY || "";
 
-export const stripe = new Stripe(stripeKey);
+// export const stripe = new Stripe(stripeKey);
+
+export const instance = new Razorpay({
+  key_id: process.env.RAZORPAY_API_KEY,
+  key_secret: process.env.RAZORPAY_APT_SECRET,
+});
 
 app.use(express.urlencoded({ extended: true }));
 connectDB(process.env.uri as string);
@@ -51,11 +58,11 @@ app.use("/uploads", express.static("uploads"));
 app.use(errorMiddleware);
 app.use(morgan("dev"));
 
-// app.listen(port, () => {
-//     console.log(`Server is running on http://localhost:${port}`);
-// }).on('error', (err) => {
-//     console.error('Failed to start the server:', err.message);
-// });
+app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
+}).on('error', (err) => {
+    console.error('Failed to start the server:', err.message);
+});
 
 
-export default app;
+// export default app;
