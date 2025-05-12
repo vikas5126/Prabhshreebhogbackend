@@ -3,7 +3,7 @@ import { adminOnly } from "../middlewares/auth.js";
 import {
   allCoupons,
   applyDiscount,
-  createRazorpayOrder
+  createRazorpayOrder,
 //   createPaymentIntent,
   deleteCoupon,
   getCoupon,

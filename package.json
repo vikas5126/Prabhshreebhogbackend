@@ -8,7 +8,8 @@
     "start": "node dist/app.js",
     "build": "tsc",
     "watch": "tsc -w",
-    "dev": "nodemon dist/app.js"
+    "dev": "nodemon dist/app.js",
+    "force-build": "rimraf build dist node_modules/.cache && npm run build"
   },
   "keywords": [],
   "author": "",
@@ -27,6 +28,7 @@
     "node-cache": "^5.1.2",
     "path": "^0.12.7",
     "razorpay": "^2.9.6",
+    "rm": "^0.1.8",
     "stripe": "^18.1.0",
     "uuid": "^11.1.0",
     "validator": "^13.15.0"

@@ -1,8 +1,6 @@
 import express from "express";
 import { adminOnly } from "../middlewares/auth.js";
-import { allCoupons, applyDiscount, createRazorpayOrder
-//   createPaymentIntent,
-, 
+import { allCoupons, applyDiscount, createRazorpayOrder, 
 //   createPaymentIntent,
 deleteCoupon, getCoupon, newCoupon, updateCoupon, verifyRazorpayPayment, } from "../controllers/payment.js";
 const app = express.Router();
