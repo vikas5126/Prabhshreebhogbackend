@@ -55,8 +55,11 @@ app.get('/', (req, res) => {
 
 // 404 error handling middleware
 app.use("/uploads", express.static("uploads"));
-app.use(errorMiddleware);
+// app.use(errorMiddleware);
 app.use(morgan("dev"));
+
+// Error-handling middleware should be placed after all other middleware and routes
+app.use(errorMiddleware);
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
