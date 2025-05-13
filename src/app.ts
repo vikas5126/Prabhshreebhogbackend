@@ -66,11 +66,11 @@ app.use((err: ErrorHandler, req: express.Request, res: express.Response, next: e
     errorMiddleware(err, req, res, next);
 });
 
-// app.listen(port, () => {
-//     console.log(`Server is running on http://localhost:${port}`);
-// }).on('error', (err) => {
-//     console.error('Failed to start the server:', err.message);
-// });
+app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
+}).on('error', (err) => {
+    console.error('Failed to start the server:', err.message);
+});
 
 
-export default app;
+// export default app;
