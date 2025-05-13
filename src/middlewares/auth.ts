@@ -1,10 +1,14 @@
 import { User } from "../models/user.js";
 import ErrorHandler from "../utils/utility-class.js";
 import { TryCatch } from "./error.js";
-import { Request } from "express";
+import { Request, Response, NextFunction } from "express";
 
 // Middleware to make sure only admin is allowed
-export const adminOnly = TryCatch(async (req: Request, res, next) => {
+export const adminOnly = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   const { id } = req.query;
 
   if (!id) return next(new ErrorHandler("Saale Login Kr phle", 401));
@@ -15,4 +19,4 @@ export const adminOnly = TryCatch(async (req: Request, res, next) => {
     return next(new ErrorHandler("Saale Aukat Nhi Hai Teri", 403));
 
   next();
-});
+};

@@ -1,4 +1,4 @@
-import { Request } from "express";
+import { NextFunction, Request, Response } from "express";
 import { TryCatch } from "../middlewares/error.js";
 import { Order } from "../models/order.js";
 import { NewOrderRequestBody } from "../types/types.js";
@@ -7,7 +7,11 @@ import { invalidateCache, reduceStock } from "../utils/features.js";
 import ErrorHandler from "../utils/utility-class.js";
 import { MyCache } from "../app.js";
 
-export const myOrders = TryCatch(async (req, res, next) => {
+export const myOrders = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<Response> => {
   const { id: user } = req.query;
 
   const key = `my-orders-${user}`;
@@ -26,9 +30,13 @@ export const myOrders = TryCatch(async (req, res, next) => {
     success: true,
     orders,
   });
-});
+};
 
-export const allOrders = TryCatch(async (req, res, next) => {
+export const allOrders = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<Response> => {
   const key = `all-orders`;
 
   let orders;
@@ -45,9 +53,13 @@ export const allOrders = TryCatch(async (req, res, next) => {
     success: true,
     orders,
   });
-});
+};
 
-export const getSingleOrder = TryCatch(async (req, res, next) => {
+export const getSingleOrder = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<Response> => {
   const { id } = req.params;
   const key = `order-${id}`;
 
@@ -58,7 +70,10 @@ export const getSingleOrder = TryCatch(async (req, res, next) => {
   else {
     order = await Order.findById(id).populate("user", "name");
 
-    if (!order) return next(new ErrorHandler("Order Not Found", 404));
+    if (!order) {
+      next(new ErrorHandler("Order Not Found", 404));
+      return res.status(404).json({ success: false, message: "Order Not Found" });
+    }
 
     MyCache.set(key, JSON.stringify(order));
 
@@ -68,10 +83,12 @@ export const getSingleOrder = TryCatch(async (req, res, next) => {
     success: true,
     order,
   });
-});
+};
+
+
 
 export const newOrder = TryCatch(
-  async (req: Request<{}, {}, NewOrderRequestBody>, res, next) => {
+  async (req: Request<{}, {}, NewOrderRequestBody>, res: Response, next:NextFunction): Promise<Response> => {
     const {
       shippingInfo,
       orderItems,
@@ -116,12 +133,19 @@ export const newOrder = TryCatch(
   }
 );
 
-export const processOrder = TryCatch(async (req, res, next) => {
+export const processOrder = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<Response> => {
   const { id } = req.params;
 
   const order = await Order.findById(id);
 
-  if (!order) return next(new ErrorHandler("Order Not Found", 404));
+  if (!order) {
+    next(new ErrorHandler("Order Not Found", 404));
+    return res.status(404).json({ success: false, message: "Order Not Found" });
+  }
 
   switch (order.status) {
     case "Processing":
@@ -149,13 +173,20 @@ export const processOrder = TryCatch(async (req, res, next) => {
     success: true,
     message: "Order Processed Successfully",
   });
-});
+};
 
-export const deleteOrder = TryCatch(async (req, res, next) => {
+export const deleteOrder = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<Response> => {
   const { id } = req.params;
 
   const order = await Order.findById(id);
-  if (!order) return next(new ErrorHandler("Order Not Found", 404));
+  if (!order) {
+    next(new ErrorHandler("Order Not Found", 404));
+    return res.status(404).json({ success: false, message: "Order Not Found" });
+  }
 
   await order.deleteOne();
 
@@ -171,4 +202,4 @@ export const deleteOrder = TryCatch(async (req, res, next) => {
     success: true,
     message: "Order Deleted Successfully",
   });
-});
+};

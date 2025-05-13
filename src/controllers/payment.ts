@@ -82,8 +82,16 @@ import Razorpay from "razorpay";
 
 // 
 
+
+import { Request, Response, NextFunction } from "express";
+
+
 // route: POST /api/razorpay/order
-export const createRazorpayOrder = TryCatch(async (req, res, next) => {
+export const createRazorpayOrder = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   const { amount } = req.body;
 
   if (!amount) return next(new ErrorHandler("Please enter amount", 400));
@@ -103,11 +111,15 @@ export const createRazorpayOrder = TryCatch(async (req, res, next) => {
     success: true,
     order,
   });
-});
+};
 
 
 // route: POST /api/payment/verify
-export const verifyRazorpayPayment = TryCatch(async (req, res, next) => {
+export const verifyRazorpayPayment = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
 
   if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
@@ -140,66 +152,90 @@ export const verifyRazorpayPayment = TryCatch(async (req, res, next) => {
       message: "Payment verification failed",
     });
   }
-});
+};
 
 
-export const newCoupon = TryCatch(async (req, res, next) => {
+export const newCoupon = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<Response> => {
     const { coupon, amount } = req.body;
   
-    if (!coupon || !amount)
-      return next(new ErrorHandler("Please enter both coupon and amount", 400));
-  
+    if (!coupon || !amount){
+      next(new ErrorHandler("Please enter both coupon and amount", 400));
+      return res.status(400).json({ success: false, message: "Please enter both coupon and amount" });
+    }
+
     await Coupon.create({ coupon, amount });
   
     return res.status(201).json({
       success: true,
       message: `Coupon ${coupon} Created Successfully`,
     });
-  });
+  };
   
-  export const applyDiscount = TryCatch(async (req, res, next) => {
+  export const applyDiscount = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<Response> => {
     const { coupon } = req.query;
   
     const discount = await Coupon.findOne({ coupon });
   
-    if (!discount) return next(new ErrorHandler("Invalid Coupon Code", 400));
+    if (!discount) {
+      next(new ErrorHandler("Invalid Coupon Code", 400));
+      return res.status(400).json({ success: false, message: "Invalid Coupon Code" });
+    }
   
     return res.status(200).json({
       success: true,
       discount: discount.amount,
     });
-  });
+  };
   
-  export const allCoupons = TryCatch(async (req, res, next) => {
+  export const allCoupons = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<Response> => {
     const coupons = await Coupon.find({});
   
     return res.status(200).json({
       success: true,
       coupons,
     });
-  });
+  };
   
-  export const getCoupon = TryCatch(async (req, res, next) => {
-    const { id } = req.params;
+export const getCoupon = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const coupon = await Coupon.findById(req.params.id);
+    if (!coupon) {
+      res.status(404).json({ message: "Coupon not found" });
+      return;
+    }
+    res.status(200).json(coupon);
+  } catch (error) {
+    next(error);
+  }
+};
   
-    const coupon = await Coupon.findById(id);
-  
-    if (!coupon) return next(new ErrorHandler("Invalid Coupon ID", 400));
-  
-    return res.status(200).json({
-      success: true,
-      coupon,
-    });
-  });
-  
-  export const updateCoupon = TryCatch(async (req, res, next) => {
+  export const updateCoupon = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<Response> => {
     const { id } = req.params;
   
     const { coupon, amount } = req.body;
   
     const code = await Coupon.findById(id);
   
-    if (!code) return next(new ErrorHandler("Invalid Coupon ID", 400));
+    if (!code) {
+      next(new ErrorHandler("Invalid Coupon ID", 400));
+      return res.status(400).json({ success: false, message: "Invalid Coupon ID" });
+    }
   
     if (coupon) code.coupon = coupon;
     if (amount) code.amount = amount;
@@ -210,7 +246,7 @@ export const newCoupon = TryCatch(async (req, res, next) => {
       success: true,
       message: `Coupon ${coupon.code} Updated Successfully`,
     });
-  });
+  };
   
   export const deleteCoupon = TryCatch(async (req, res, next) => {
     const { id } = req.params;
