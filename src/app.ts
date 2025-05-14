@@ -61,11 +61,11 @@ app.use(morgan("dev"));
 // Error-handling middleware should be placed after all other middleware and routes
 app.use(errorMiddleware);
 
-// app.listen(port, () => {
-//     console.log(`Server is running on http://localhost:${port}`);
-// }).on('error', (err) => {
-//     console.error('Failed to start the server:', err.message);
-// });
+app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
+}).on('error', (err) => {
+    console.error('Failed to start the server:', err.message);
+});
 
 
-export default app;
+// export default app;
