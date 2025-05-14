@@ -93,7 +93,7 @@ export const getInventories = async ({
   return categoryCount;
 };
 
-interface MyDocument extends Document {
+export default interface MyDocument extends Document {
   createdAt: Date;
   discount?: number;
   total?: number;

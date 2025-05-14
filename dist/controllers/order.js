@@ -4,7 +4,7 @@ import { Order } from "../models/order.js";
 import { invalidateCache, reduceStock } from "../utils/features.js";
 import ErrorHandler from "../utils/utility-class.js";
 import { MyCache } from "../app.js";
-export const myOrders = TryCatch(async (req, res, next) => {
+export const myOrders = async (req, res, next) => {
     const { id: user } = req.query;
     const key = `my-orders-${user}`;
     let orders;
@@ -21,8 +21,8 @@ export const myOrders = TryCatch(async (req, res, next) => {
         success: true,
         orders,
     });
-});
-export const allOrders = TryCatch(async (req, res, next) => {
+};
+export const allOrders = async (req, res, next) => {
     const key = `all-orders`;
     let orders;
     orders = MyCache.has(key);
@@ -37,8 +37,8 @@ export const allOrders = TryCatch(async (req, res, next) => {
         success: true,
         orders,
     });
-});
-export const getSingleOrder = TryCatch(async (req, res, next) => {
+};
+export const getSingleOrder = async (req, res, next) => {
     const { id } = req.params;
     const key = `order-${id}`;
     let order;
@@ -47,8 +47,10 @@ export const getSingleOrder = TryCatch(async (req, res, next) => {
         order = MyCache.get(key);
     else {
         order = await Order.findById(id).populate("user", "name");
-        if (!order)
-            return next(new ErrorHandler("Order Not Found", 404));
+        if (!order) {
+            next(new ErrorHandler("Order Not Found", 404));
+            return res.status(404).json({ success: false, message: "Order Not Found" });
+        }
         MyCache.set(key, JSON.stringify(order));
         // await redis.setex(key, redisTTL, JSON.stringify(order));
     }
@@ -56,7 +58,7 @@ export const getSingleOrder = TryCatch(async (req, res, next) => {
         success: true,
         order,
     });
-});
+};
 export const newOrder = TryCatch(async (req, res, next) => {
     const { shippingInfo, orderItems, user, subtotal, tax, shippingCharges, discount, total, } = req.body;
     // console.log(req.body);0
@@ -85,11 +87,13 @@ export const newOrder = TryCatch(async (req, res, next) => {
         message: "Order Placed Successfully",
     });
 });
-export const processOrder = TryCatch(async (req, res, next) => {
+export const processOrder = async (req, res, next) => {
     const { id } = req.params;
     const order = await Order.findById(id);
-    if (!order)
-        return next(new ErrorHandler("Order Not Found", 404));
+    if (!order) {
+        next(new ErrorHandler("Order Not Found", 404));
+        return res.status(404).json({ success: false, message: "Order Not Found" });
+    }
     switch (order.status) {
         case "Processing":
             order.status = "Shipped";
@@ -113,12 +117,14 @@ export const processOrder = TryCatch(async (req, res, next) => {
         success: true,
         message: "Order Processed Successfully",
     });
-});
-export const deleteOrder = TryCatch(async (req, res, next) => {
+};
+export const deleteOrder = async (req, res, next) => {
     const { id } = req.params;
     const order = await Order.findById(id);
-    if (!order)
-        return next(new ErrorHandler("Order Not Found", 404));
+    if (!order) {
+        next(new ErrorHandler("Order Not Found", 404));
+        return res.status(404).json({ success: false, message: "Order Not Found" });
+    }
     await order.deleteOne();
     await invalidateCache({
         product: false,
@@ -131,4 +137,4 @@ export const deleteOrder = TryCatch(async (req, res, next) => {
         success: true,
         message: "Order Deleted Successfully",
     });
-});
+};

@@ -4,11 +4,12 @@ import { TryCatch } from "../middlewares/error.js";
 import { Order } from "../models/order.js";
 import { Product } from "../models/product.js";
 import { User } from "../models/user.js";
-import {
+import MyDocument, {
   calculatePercentage,
   getChartData,
   getInventories,
 } from "../utils/features.js";
+
 
 export const getDashboardStats = TryCatch(async (req, res, next) => {
   let stats;
@@ -361,9 +362,9 @@ export const getBarCharts = TryCatch(async (req, res, next) => {
       twelveMonthOrdersPromise,
     ]);
 
-    const productCounts = getChartData({ length: 6, today, docArr: products });
+    const productCounts = getChartData({ length: 6, today, docArr: products as unknown as MyDocument[] });
     const usersCounts = getChartData({ length: 6, today, docArr: users });
-    const ordersCounts = getChartData({ length: 12, today, docArr: orders });
+    const ordersCounts = getChartData({ length: 12, today, docArr: orders as unknown as MyDocument[] });
 
     charts = {
       users: usersCounts,
@@ -406,18 +407,18 @@ export const getLineCharts = TryCatch(async (req, res, next) => {
       Order.find(baseQuery).select(["createdAt", "discount", "total"]),
     ]);
 
-    const productCounts = getChartData({ length: 12, today, docArr: products });
+    const productCounts = getChartData({ length: 12, today, docArr: products as unknown as MyDocument[] });
     const usersCounts = getChartData({ length: 12, today, docArr: users });
     const discount = getChartData({
       length: 12,
       today,
-      docArr: orders,
+      docArr: orders as unknown as MyDocument[],
       property: "discount",
     });
     const revenue = getChartData({
       length: 12,
       today,
-      docArr: orders,
+      docArr: orders as unknown as MyDocument[],
       property: "total",
     });
 

@@ -15,6 +15,9 @@ import orderRoutes from './routes/order.js';
 import couponRoutes from './routes/payment.js';
 import adminRoutes from './routes/stats.js';
 import Razorpay from 'razorpay';
+import { ParamsDictionary } from 'express-serve-static-core';
+import { ParsedQs } from 'qs';
+import ErrorHandler from './utils/utility-class.js';
 
 config({
     path: "./.env",
@@ -59,7 +62,9 @@ app.use("/uploads", express.static("uploads"));
 app.use(morgan("dev"));
 
 // Error-handling middleware should be placed after all other middleware and routes
-app.use(errorMiddleware);
+app.use((err: ErrorHandler, req: express.Request, res: express.Response, next: express.NextFunction) => {
+    errorMiddleware(err, req, res, next);
+});
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
