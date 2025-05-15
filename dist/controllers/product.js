@@ -57,6 +57,7 @@ export const getAllCategories = TryCatch(async (req, res, next) => {
 });
 export const getProductByCategories = TryCatch(async (req, res, next) => {
     const { category } = req.params;
+    console.log(category);
     const products = await Product.find({ category });
     return res.status(200).json({
         success: true,

@@ -12,6 +12,11 @@ interface IUser  extends Document {
     createdAt: Date;
     updatedAt: Date;
     age: number;
+    cartItems: Array<{
+        product: mongoose.Schema.Types.ObjectId;
+        quantity: number;
+        addedAt: Date;
+    }>;
 }
 
 const  schema = new mongoose.Schema({
@@ -48,7 +53,26 @@ const  schema = new mongoose.Schema({
     dob: {
         type: Date,
         required: [true, "please enter date of birth"],
-    }
+    },
+    cartItems: [
+  {
+    product: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Product",
+      required: true,
+    },
+    quantity: {
+      type: Number,
+      required: true,
+      min: 1,
+      default: 1,
+    },
+    addedAt: {
+      type: Date,
+      default: Date.now,
+    },
+  }
+],
 }, { timestamps: true });
 
 

@@ -1,4 +1,5 @@
 import { User } from "../models/user.js";
+// import admin from "../utils/firebase.js";
 import ErrorHandler from "../utils/utility-class.js";
 import { TryCatch } from "./error.js";
 import { Request, Response, NextFunction } from "express";
@@ -20,3 +21,25 @@ export const adminOnly = async (
 
   next();
 };
+
+
+
+// export const isAuthenticated = async (
+//   req: Request & { user?: { _id: string } },
+//   res: Response,
+//   next: NextFunction
+// ) => {
+//   const token = req.headers.authorization?.split("Bearer ")[1];
+
+//   if (!token) {
+//     return res.status(401).json({ message: "Unauthorized: Token missing" });
+//   }
+
+//   try {
+//     const decoded = await admin.auth().verifyIdToken(token);
+//     req.user = { _id: decoded.uid };
+//     next();
+//   } catch (error) {
+//     return res.status(401).json({ message: "Unauthorized: Invalid token" });
+//   }
+// };

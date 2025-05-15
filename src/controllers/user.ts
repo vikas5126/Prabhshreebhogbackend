@@ -74,3 +74,32 @@ export const deleteUser = TryCatch(async (req, res, next) => {
     message: "User Deleted Successfully",
   });
 });
+
+export const setCartItems = async (req: Request & { user?: { _id: string } }, res: Response, next: NextFunction): Promise<Response<any, Record<string, any>> | undefined> => {
+    const { cartItems } = req.body;
+
+    if (!Array.isArray(cartItems)) {
+      return res.status(400).json({ message: "Invalid cartItems format" });
+    }
+
+    const user = await User.findById(req.user?._id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    user.cartItems = cartItems;
+    await user.save();
+
+    return res.status(200).json({ message: "Cart saved successfully" });
+}
+
+
+export const getCartItems = async (req: Request & { user?: { _id: string } }, res: Response, next: NextFunction): Promise<Response<any, Record<string, any>> | undefined> => {
+  // const id = req.user._id;
+
+  if (!req.user) return res.status(401).json({ message: "Unauthorized" });
+
+  const user = await User.findById(req.user._id).populate("cartItems.product");
+
+  if (!user) return res.status(404).json({ message: "User not found" });
+
+  res.status(200).json({ cartItems: user.cartItems });
+}
