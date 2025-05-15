@@ -46,9 +46,9 @@ app.use(morgan("dev"));
 app.use((err, req, res, next) => {
     errorMiddleware(err, req, res, next);
 });
-// app.listen(port, () => {
-//     console.log(`Server is running on http://localhost:${port}`);
-// }).on('error', (err) => {
-//     console.error('Failed to start the server:', err.message);
-// });
-export default app;
+app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
+}).on('error', (err) => {
+    console.error('Failed to start the server:', err.message);
+});
+// export default app;
