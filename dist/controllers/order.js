@@ -29,7 +29,7 @@ export const allOrders = async (req, res, next) => {
     if (orders)
         orders = JSON.parse(MyCache.get(key));
     else {
-        orders = await Order.find().populate("user", "name");
+        orders = await Order.find().populate("user", "name role");
         // await redis.setex(key, redisTTL, JSON.stringify(orders));
         MyCache.set(key, JSON.stringify(orders));
     }
